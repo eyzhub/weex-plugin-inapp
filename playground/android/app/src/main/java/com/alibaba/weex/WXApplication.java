@@ -49,6 +49,8 @@ import com.taobao.weex.common.WXException;
 
 import com.alibaba.weex.plugin.loader.WeexPluginContainer;
 
+import org.weex.plugin.weexplugininapp.WeexPluginInappModule;
+
 public class WXApplication extends Application {
 
   @Override
@@ -101,6 +103,8 @@ public class WXApplication extends Application {
       WXSDKEngine.registerModule("titleBar", WXTitleBar.class);
 
       WXSDKEngine.registerModule("wsonTest", WXWsonTestModule.class);
+
+      WXSDKEngine.registerModule("pluginQrcodeScanner", WeexPluginInappModule.class);
       /**
        * override default image tag
        * WXSDKEngine.registerComponent("image", FrescoImageComponent.class);

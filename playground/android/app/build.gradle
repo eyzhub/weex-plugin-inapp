@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.taobao.android.weex.plugin.gradle'
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "org.weex.demo"
-        minSdkVersion 14
-        targetSdkVersion 25
+        minSdkVersion 23
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -62,10 +62,13 @@ dependencies {
     compile 'com.alibaba:fastjson:1.1.46.android'
     compile "com.android.support:support-v4:${rootProject.ext.androidSupportVersion}"
     compile "com.android.support:appcompat-v7:${rootProject.ext.androidSupportVersion}"
+
+    //noinspection GradleCompatible
     compile "com.android.support:design:${rootProject.ext.androidSupportVersion}"
     compile "com.android.support:support-annotations:${rootProject.ext.androidSupportVersion}"
     compile 'com.jakewharton.scalpel:scalpel:1.1.2'
     compile 'com.android.support.test.espresso:espresso-idling-resource:2.2.2'
+
     compile 'com.taobao.android.weex_inspection:urlconnection_interceptor:1.0.0'
     compile 'com.taobao.android.weex_inspection:protocol:1.1.4.1'
     compile 'com.taobao.android:weex_inspector:0.13.4'

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "25.0.2"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -33,4 +33,14 @@ dependencies {
     provided 'com.taobao.android:weexplugin-annotation:1.3'
 
     testCompile 'junit:junit:4.12'
+
+    compile 'com.taobao.android:weex_sdk:0.18.0'
+    compile 'com.taobao.android.weex_inspection:urlconnection_interceptor:1.0.0'
+    compile 'com.taobao.android.weex_inspection:protocol:1.1.4.1'
+    compile 'com.taobao.android:weex_inspector:0.13.4'
+
+    compile "com.taobao.android:weex_sdk:${rootProject.ext.weex_sdk}"
+    compile 'com.taobao.android:weexplugin-loader:1.3'
+
+    compile 'com.android.billingclient:billing:1.1'
 }
