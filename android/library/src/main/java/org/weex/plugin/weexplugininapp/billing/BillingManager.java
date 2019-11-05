@@ -108,25 +108,22 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     public void querySkuDetailsAsync(@BillingClient.SkuType final String itemType,
                                      final List<String> skuList, final SkuDetailsResponseListener listener) {
-        Log.i(TAG, skuList.toString());
-        Log.i(TAG, "hererrr");
-
-        Log.d("runnable", String.valueOf(mBillingClient.isReady()));
-
         // Specify a runnable to start when connection to Billing client is established
         Runnable executeOnConnectedService = new Runnable() {
             @Override
             public void run() {
                 SkuDetailsParams skuDetailsParams = SkuDetailsParams.newBuilder()
-                        .setSkusList(skuList).setType(itemType).build();
+                        .setSkusList(skuList)
+                        .setType(itemType)
+                        .build();
 
                 mBillingClient.querySkuDetailsAsync(skuDetailsParams,
                         new SkuDetailsResponseListener() {
                             @Override
                             public void onSkuDetailsResponse(int responseCode,
                                                              List<SkuDetails> skuDetailsList) {
-                                Log.i(TAG + "!", skuList.toString());
-                                Log.i(TAG + "!", itemType);
+//                                Log.i(TAG + "!", skuList.toString());
+//                                Log.i(TAG + "!", itemType);
                                 listener.onSkuDetailsResponse(responseCode, skuDetailsList);
                             }
                         });

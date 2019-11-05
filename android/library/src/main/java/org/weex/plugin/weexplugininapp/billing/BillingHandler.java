@@ -107,6 +107,13 @@ public class BillingHandler implements BillingProvider {
             Log.i("onPurchasesUpdated!", String.valueOf(responseCode));
         }
 
+        private void respondNoProductsFound() {
+            Log.d(TAG, "No product found");
+            response.put("error", true);
+            response.put("productId", "null");
+            jsCallback.invoke(response);
+        }
+
         private void query() {
             final List<SkuRowData> inList = new ArrayList<>();
             SkuDetailsResponseListener responseListener = new SkuDetailsResponseListener() {
@@ -119,6 +126,8 @@ public class BillingHandler implements BillingProvider {
 
                         for (SkuDetails details : skuDetailsList) {
                             Log.i(TAG, "Found sku: " + details);
+                            Log.i("inlist", inList.toString());
+
                             inList.add(new SkuRowData(details.getSku(), details.getTitle(),
                                     details.getPrice(), details.getDescription(),
                                     details.getType()));
@@ -128,20 +137,17 @@ public class BillingHandler implements BillingProvider {
                             mBillingManager.startPurchaseFlow(productId, details.getType());
 
                         }
+                    } else {
+                        respondNoProductsFound();
                     }
                 }
             };
 
-
-            // Start querying for in-app SKUs
             List<String> inSkus = Arrays.asList(productId);
-
             mBillingManager.querySkuDetailsAsync(BillingClient.SkuType.INAPP, inSkus, responseListener);
 
-            List<String> subSkus = Arrays.asList(productId);
-
-            // Start querying for subscriptions SKUs
-            mBillingManager.querySkuDetailsAsync(BillingClient.SkuType.SUBS, subSkus, responseListener);
+//            List<String> subSkus = Arrays.asList(productId);
+//            mBillingManager.querySkuDetailsAsync(BillingClient.SkuType.SUBS, subSkus, responseListener);
         }
     }
 }

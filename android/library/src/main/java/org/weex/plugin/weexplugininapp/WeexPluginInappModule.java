@@ -63,8 +63,6 @@ public class WeexPluginInappModule extends WXModule {
         Log.d("productId", this.response.toString());
 
         this.doPurchase();
-
-//        this.jsCallback.invoke(this.response);
     }
 
     @JSMethod(uiThread = true)
@@ -82,8 +80,6 @@ public class WeexPluginInappModule extends WXModule {
         Log.d("productId", this.response.toString());
 
         this.doPurchase();
-
-//        this.jsCallback.invoke(this.response);
     }
 
     @JSMethod(uiThread = true)
