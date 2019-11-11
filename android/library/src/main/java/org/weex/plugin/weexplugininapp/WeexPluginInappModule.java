@@ -1,6 +1,8 @@
 package org.weex.plugin.weexplugininapp;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -9,6 +11,9 @@ import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONArray;
 import org.weex.plugin.weexplugininapp.billing.BillingHandler;
 
 import java.util.HashMap;
@@ -20,9 +25,9 @@ public class WeexPluginInappModule extends WXModule {
     private static final String TAG = "WeexPluginInappModule";
 
     // Define the callback
-    JSCallback jsCallback;
-    Activity thisActivity;
-    String productId;
+    private JSCallback jsCallback;
+    private Activity thisActivity;
+    private String productId;
 
     // Inapp repsonse map
     private Map<String, Object> response = new HashMap();
@@ -42,17 +47,21 @@ public class WeexPluginInappModule extends WXModule {
     }
 
     @JSMethod(uiThread = true)
-    public void show() {
-        Log.d(TAG, "Showing!!!");
-        Toast.makeText(mWXSDKInstance.getContext(), "Module weexPluginInapp is created sucessfully ", Toast.LENGTH_SHORT).show();
+    public void show(String params) throws JSONException {
+        JSONObject json = new JSONObject();
+        try { json = new JSONObject(params); } catch (Throwable t) { Log.e("-> show", "Could not parse malformed JSON: \"" + json + "\""); }
+        String message = (String) json.get("message");
+
+        Log.d(TAG, "-> Showing!!!");
+        Toast.makeText(mWXSDKInstance.getContext(), message , Toast.LENGTH_SHORT).show();
     }
 
     @JSMethod(uiThread = true)
-    public void testSuccess(String productId, JSCallback jsCallback) {
-        Log.d(TAG, "Testing success");
+    public void buy(String productId, JSCallback jsCallback) {
+        Log.d(TAG, "-> buy " + productId);
 
         Toast.makeText(mWXSDKInstance.getContext(),
-                "Testing case: product purchase success ", Toast.LENGTH_SHORT
+                "Buy ", Toast.LENGTH_SHORT
         ).show();
 
         this.jsCallback = jsCallback;
@@ -65,50 +74,50 @@ public class WeexPluginInappModule extends WXModule {
         this.doPurchase();
     }
 
-    @JSMethod(uiThread = true)
-    public void testFailure(String productId, JSCallback jsCallback) {
-        Log.d(TAG, "Testing failure");
+   @JSMethod(uiThread = true)
+    public void subscribe(String productId, JSCallback jsCallback) {
+        Log.d(TAG, "-> Subscribe " + productId);
+
         Toast.makeText(mWXSDKInstance.getContext(),
-                "Testing case: product purchase failure ", Toast.LENGTH_SHORT
+                "subscribe ", Toast.LENGTH_SHORT
         ).show();
 
         this.jsCallback = jsCallback;
-        this.response.put("productId", productId);
         this.thisActivity = ((Activity) mWXSDKInstance.getContext());
-        this.productId = productId;
 
-        Log.d("productId", this.response.toString());
-
-        this.doPurchase();
+        // this.doPurchase();
     }
 
     @JSMethod(uiThread = true)
-    public void testUnavailable(String productId, JSCallback jsCallback) {
-        Log.d(TAG, "Testing unavailable!!!");
+    public void manageSubscriptions() {
+        Log.d(TAG, "-> manageSubscriptions");
+
         Toast.makeText(mWXSDKInstance.getContext(),
-                "Testing case: product purchase unavailable ", Toast.LENGTH_SHORT
+                "manageSubscriptions", Toast.LENGTH_SHORT
+        ).show();
+
+         this.thisActivity = ((Activity) mWXSDKInstance.getContext());
+         Uri webpage = Uri.parse("http://play.google.com/store/account/subscriptions");
+         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+         this.thisActivity.startActivity(intent);
+    }
+
+    @JSMethod(uiThread = true)
+    public void getProductInfo(String params, JSCallback jsCallback) {
+        Log.d(TAG, "-> getProductInfo");
+        JSONObject json = new JSONObject();
+        try { json = new JSONObject(params); } catch (Throwable t) { Log.e("-> show", "Could not parse malformed JSON: \"" + json + "\""); }
+        // params.list is an array with all product id, iterate getting information about each product and return all at once in the callback
+        // JSONArray list = json.getJSONArray("list");
+
+        Toast.makeText(mWXSDKInstance.getContext(),
+                "getProductInfo ", Toast.LENGTH_SHORT
         ).show();
 
         this.jsCallback = jsCallback;
-        this.response.put("productId", productId);
         this.thisActivity = ((Activity) mWXSDKInstance.getContext());
-        this.productId = productId;
-
-        Log.d("productId", this.response.toString());
-
-        this.doPurchase();
-    }
-
-    @JSMethod(uiThread = true)
-    public void purchase(String productId, JSCallback jsCallback) {
-        Log.d(TAG, "purchasing " + productId);
-
-        this.jsCallback = jsCallback;
-        this.response.put("productId", productId);
-        this.thisActivity = ((Activity) mWXSDKInstance.getContext());
-        this.productId = productId;
-
-        this.doPurchase();
+        // jsCallback('getProductInfo');
+        // this.doPurchase();
     }
 
     private void doPurchase() {
