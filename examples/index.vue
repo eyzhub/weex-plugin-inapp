@@ -6,6 +6,19 @@
 		<div @click="createAction" class="button">
 			<text style="color:#fff">Click Me!</text>
 		</div>
+		<div>
+			<text>Result: {{content}}</text>
+			<text>Result: {{fullResponse}}</text>
+		</div>
+		<div @click="testSuccess" class="button">
+			<text style="color:#fff">Test Success</text>
+		</div>
+		<div @click="testFailure" class="button">
+			<text style="color:#fff">Test Failure</text>
+		</div>
+		<div @click="testUnavailable" class="button">
+			<text style="color:#fff">Test Unavailable</text>
+		</div>
   </div>
 </template>
 
@@ -45,10 +58,39 @@
 	module.exports = {
 		data: {
 			logo: 'http://img1.vued.vanthink.cn/vued08aa73a9ab65dcbd360ec54659ada97c.png',
+			content: "No response",
+			fullResponse: ""
 		},
 		methods: {
 			createAction: function() {
 				weexPluginInapp.show();
+			},
+			testSuccess: function() {
+				let that = this;
+				weexPluginInapp.testSuccess('android.test.purchased', function(resp) {
+					console.log('success response');
+					console.log(resp);
+					that.content = String(resp.productId);
+					that.fullResponse = String(resp);
+				});
+			},
+			testFailure: function() {
+				let that = this;
+				weexPluginInapp.testFailure('android.test.canceled', function(resp) {
+					console.log('failure response');
+					console.log(resp);
+					that.content = String(resp.productId);
+					that.fullResponse = String(resp);
+				});
+			},
+			testUnavailable: function() {
+				let that = this;
+				weexPluginInapp.testFailure('android.test.item_unavailable', function(resp) {
+					console.log('unavailable response');
+					console.log(resp);
+					that.content = String(resp.productId);
+					that.fullResponse = String(resp);
+				});
 			}
 		}
 	}

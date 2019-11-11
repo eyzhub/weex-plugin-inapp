@@ -65,22 +65,18 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* globals alert */
-var weexPluginInapp = {
-  show: function show() {
+const weexPluginInapp = {
+  show() {
     alert('Module weexPluginInapp is created sucessfully ');
   }
 };
 
-var meta = {
+const meta = {
   weexPluginInapp: [{
     lowerCamelCaseName: 'show',
     args: []
@@ -91,9 +87,9 @@ function init(weex) {
   weex.registerModule('weexPluginInapp', weexPluginInapp, meta);
 }
 
-exports.default = {
+/* harmony default export */ __webpack_exports__["default"] = ({
   init: init
-};
+});
 
 /***/ })
 /******/ ]);
