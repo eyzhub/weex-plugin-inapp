@@ -49,11 +49,15 @@ public class WeexPluginInappModule extends WXModule {
     @JSMethod(uiThread = true)
     public void show(String params) throws JSONException {
         JSONObject json = new JSONObject();
-        try { json = new JSONObject(params); } catch (Throwable t) { Log.e("-> show", "Could not parse malformed JSON: \"" + json + "\""); }
+        try {
+            json = new JSONObject(params);
+        } catch (Throwable t) {
+            Log.e("-> show", "Could not parse malformed JSON: \"" + json + "\"");
+        }
         String message = (String) json.get("message");
 
         Log.d(TAG, "-> Showing!!!");
-        Toast.makeText(mWXSDKInstance.getContext(), message , Toast.LENGTH_SHORT).show();
+        Toast.makeText(mWXSDKInstance.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @JSMethod(uiThread = true)
@@ -74,7 +78,7 @@ public class WeexPluginInappModule extends WXModule {
         this.doPurchase();
     }
 
-   @JSMethod(uiThread = true)
+    @JSMethod(uiThread = true)
     public void subscribe(String productId, JSCallback jsCallback) {
         Log.d(TAG, "-> Subscribe " + productId);
 
@@ -96,17 +100,21 @@ public class WeexPluginInappModule extends WXModule {
                 "manageSubscriptions", Toast.LENGTH_SHORT
         ).show();
 
-         this.thisActivity = ((Activity) mWXSDKInstance.getContext());
-         Uri webpage = Uri.parse("http://play.google.com/store/account/subscriptions");
-         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-         this.thisActivity.startActivity(intent);
+        this.thisActivity = ((Activity) mWXSDKInstance.getContext());
+        Uri webpage = Uri.parse("http://play.google.com/store/account/subscriptions");
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        this.thisActivity.startActivity(intent);
     }
 
     @JSMethod(uiThread = true)
     public void getProductInfo(String params, JSCallback jsCallback) {
         Log.d(TAG, "-> getProductInfo");
         JSONObject json = new JSONObject();
-        try { json = new JSONObject(params); } catch (Throwable t) { Log.e("-> show", "Could not parse malformed JSON: \"" + json + "\""); }
+        try {
+            json = new JSONObject(params);
+        } catch (Throwable t) {
+            Log.e("-> show", "Could not parse malformed JSON: \"" + json + "\"");
+        }
         // params.list is an array with all product id, iterate getting information about each product and return all at once in the callback
         // JSONArray list = json.getJSONArray("list");
 
