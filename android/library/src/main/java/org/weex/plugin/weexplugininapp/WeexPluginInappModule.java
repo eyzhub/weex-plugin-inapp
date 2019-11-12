@@ -13,7 +13,6 @@ import com.taobao.weex.common.WXModule;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
 import org.weex.plugin.weexplugininapp.billing.BillingHandler;
 
 import java.util.HashMap;
@@ -46,18 +45,30 @@ public class WeexPluginInappModule extends WXModule {
         callback.invoke(param);
     }
 
-    @JSMethod(uiThread = true)
-    public void show(String params) throws JSONException {
+    private String getMessageFromParams(String params) {
+        String message;
+
         JSONObject json = new JSONObject();
         try {
             json = new JSONObject(params);
+            message = (String) json.get("message");
         } catch (Throwable t) {
+            message = null;
             Log.e("-> show", "Could not parse malformed JSON: \"" + json + "\"");
         }
-        String message = (String) json.get("message");
 
+        return message;
+    }
+
+    @JSMethod(uiThread = true)
+    public void show(String params) throws JSONException {
         Log.d(TAG, "-> Showing!!!");
-        Toast.makeText(mWXSDKInstance.getContext(), message, Toast.LENGTH_SHORT).show();
+        String message = this.getMessageFromParams(params);
+        if (message != null) {
+
+        } else {
+            Toast.makeText(mWXSDKInstance.getContext(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @JSMethod(uiThread = true)
@@ -109,23 +120,24 @@ public class WeexPluginInappModule extends WXModule {
     @JSMethod(uiThread = true)
     public void getProductInfo(String params, JSCallback jsCallback) {
         Log.d(TAG, "-> getProductInfo");
-        JSONObject json = new JSONObject();
-        try {
-            json = new JSONObject(params);
-        } catch (Throwable t) {
-            Log.e("-> show", "Could not parse malformed JSON: \"" + json + "\"");
+        String message = this.getMessageFromParams(params);
+
+        if (message == null) {
+            jsCallback.invoke(null);
+        } else {
+            // params.list is an array with all product id, iterate getting information about each product
+            // and return all at once in the callback
+            // JSONArray list = json.getJSONArray("list");
+
+            Toast.makeText(mWXSDKInstance.getContext(),
+                    "getProductInfo ", Toast.LENGTH_SHORT
+            ).show();
+
+            this.jsCallback = jsCallback;
+            this.thisActivity = ((Activity) mWXSDKInstance.getContext());
+            // jsCallback('getProductInfo');
+            // this.doPurchase();
         }
-        // params.list is an array with all product id, iterate getting information about each product and return all at once in the callback
-        // JSONArray list = json.getJSONArray("list");
-
-        Toast.makeText(mWXSDKInstance.getContext(),
-                "getProductInfo ", Toast.LENGTH_SHORT
-        ).show();
-
-        this.jsCallback = jsCallback;
-        this.thisActivity = ((Activity) mWXSDKInstance.getContext());
-        // jsCallback('getProductInfo');
-        // this.doPurchase();
     }
 
     private void doPurchase() {
