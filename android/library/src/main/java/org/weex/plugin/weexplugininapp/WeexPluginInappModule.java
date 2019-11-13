@@ -45,29 +45,30 @@ public class WeexPluginInappModule extends WXModule {
         callback.invoke(param);
     }
 
-    private String getMessageFromParams(String params) {
-        String message;
+
+    private String getDataByKey(String params, String key) {
+        String data;
 
         JSONObject json = new JSONObject();
         try {
             json = new JSONObject(params);
-            message = (String) json.get("message");
+            data = (String) json.get(key);
         } catch (Throwable t) {
-            message = null;
+            data = null;
             Log.e("-> show", "Could not parse malformed JSON: \"" + json + "\"");
         }
 
-        return message;
+        return data;
     }
 
     @JSMethod(uiThread = true)
-    public void show(String params) throws JSONException {
+    public void show(String params, String key) throws JSONException {
         Log.d(TAG, "-> Showing!!!");
-        String message = this.getMessageFromParams(params);
-        if (message != null) {
-
+        String data = this.getDataByKey(params, key);
+        if (data != null) {
+            // TODO
         } else {
-            Toast.makeText(mWXSDKInstance.getContext(), message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mWXSDKInstance.getContext(), data, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -118,11 +119,11 @@ public class WeexPluginInappModule extends WXModule {
     }
 
     @JSMethod(uiThread = true)
-    public void getProductInfo(String params, JSCallback jsCallback) {
+    public void getProductInfo(String params, String key, JSCallback jsCallback) {
         Log.d(TAG, "-> getProductInfo");
-        String message = this.getMessageFromParams(params);
+        String data = this.getDataByKey(params, key);
 
-        if (message == null) {
+        if (data == null) {
             jsCallback.invoke(null);
         } else {
             // params.list is an array with all product id, iterate getting information about each product
