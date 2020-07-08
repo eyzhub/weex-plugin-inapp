@@ -1,14 +1,18 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '7.0'
+platform :ios, '9.0'
 #inhibit_all_warnings!
 
 def common
 	pod 'WeexSDK'
 	pod 'WeexPluginLoader'
+	pod 'RMStore', '~> 0.7'
+    pod 'RMStore/NSUserDefaultsPersistence'
+    #    pod 'RMStore/AppReceiptVerificator'
+#    pod 'VerifyStoreReceipt', '1.0.1'
+#    pod 'OpenSSL'
 end
 
 target 'WeexPluginInapp' do
     common
 end
-
 

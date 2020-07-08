@@ -59,6 +59,9 @@ typings/
 
 # next.js build output
 .next
+playground/ios/Pods
+playground/ios/*/xcuserdata/*.xcuserdatad
+examples/native
 
 .idea/
 

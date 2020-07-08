@@ -2,7 +2,6 @@ package org.weex.plugin.weexplugininapp.billing;
 
 import android.app.Activity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.Purchase;
@@ -21,20 +20,22 @@ public class BillingHandler implements BillingProvider {
     private BillingManager mBillingManager;
     private UpdateListener mUpdateListener;
     private String productId;
+    private String productType;
     private JSCallback jsCallback;
     private Activity mActivity;
 
     // Our repsonse map
     private Map<String, Object> response = new HashMap();
 
-    public BillingHandler(Activity mActivity, String productId, JSCallback jsCallback) {
+    public BillingHandler(Activity mActivity, String productId, String productType, JSCallback jsCallback) {
         mUpdateListener = new UpdateListener();
         this.productId = productId;
+        this.productType = productType;
         this.jsCallback = jsCallback;
         this.mActivity = mActivity;
     }
 
-    public void init() {
+    public void startPurchaseFlow() {
         mBillingManager = new BillingManager(this.mActivity, this.getUpdateListener());
     }
 
@@ -71,46 +72,49 @@ public class BillingHandler implements BillingProvider {
 
         @Override
         public void onPurchasesUpdated(List<Purchase> purchases, int responseCode) {
+            boolean success = true;
+
             response.put("billingResponseCode", responseCode);
 
             if (responseCode == BillingClient.BillingResponse.OK) {
-                response.put("error", false);
+                response.put("success", true);
                 Log.i(TAG + "!", String.valueOf(responseCode));
 
                 for (Purchase purchase : purchases) {
                     Log.i(TAG + "!", purchase.toString());
                     String purchaseToken = purchase.getPurchaseToken();
-                    mBillingManager.consumeAsync(purchaseToken);
+
+                    if (productType == BillingClient.SkuType.INAPP) {
+                        mBillingManager.consumeAsync(purchaseToken);
+                    }
+
                     response.put("purchase", purchase);
                     response.put("purchaseToken", purchaseToken);
                     response.put("productId", purchase.getSku());
-
-                    Toast.makeText(mActivity,
-                            "Purchase success ",
-                            Toast.LENGTH_SHORT
-                    ).show();
                 }
-
-            } else {
+            } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
+                response.put("productId", productId);
+                success = true;
+            }
+            else {
+                success = false;
                 response.put("error", true);
-                response.put("productId", "null");
-
-                Toast.makeText(mActivity,
-                        "Purchase failed ",
-                        Toast.LENGTH_SHORT
-                ).show();
+                response.put("productId", productId);
             }
 
-            jsCallback.invoke(response);
+            response.put("success", success);
 
-            Log.d("onPurchasesUpdated!", String.valueOf(purchases == null));
-            Log.i("onPurchasesUpdated!", String.valueOf(responseCode));
+            jsCallback.invoke(response);
         }
 
+        /*
+            Call back when product is not found.
+         */
         private void respondNoProductsFound() {
-            Log.d(TAG, "No product found");
+            response.put("success", false);
             response.put("error", true);
-            response.put("productId", "null");
+            response.put("productId", null);
+
             jsCallback.invoke(response);
         }
 
@@ -121,12 +125,10 @@ public class BillingHandler implements BillingProvider {
                 public void onSkuDetailsResponse(int responseCode,
                                                  List<SkuDetails> skuDetailsList) {
                     if (responseCode == BillingClient.BillingResponse.OK && skuDetailsList != null) {
-
                         Log.i("skuDetailsList", String.valueOf(skuDetailsList.size()));
 
                         for (SkuDetails details : skuDetailsList) {
                             Log.i(TAG, "Found sku: " + details);
-                            Log.i("inlist", inList.toString());
 
                             inList.add(new SkuRowData(details.getSku(), details.getTitle(),
                                     details.getPrice(), details.getDescription(),
@@ -135,7 +137,6 @@ public class BillingHandler implements BillingProvider {
                             Log.i(TAG, "INITING purchase flow " + productId);
 
                             mBillingManager.startPurchaseFlow(productId, details.getType());
-
                         }
                     } else {
                         respondNoProductsFound();
@@ -144,10 +145,7 @@ public class BillingHandler implements BillingProvider {
             };
 
             List<String> inSkus = Arrays.asList(productId);
-            mBillingManager.querySkuDetailsAsync(BillingClient.SkuType.INAPP, inSkus, responseListener);
-
-//            List<String> subSkus = Arrays.asList(productId);
-//            mBillingManager.querySkuDetailsAsync(BillingClient.SkuType.SUBS, subSkus, responseListener);
+            mBillingManager.querySkuDetailsAsync(productType, inSkus, responseListener);
         }
     }
 }

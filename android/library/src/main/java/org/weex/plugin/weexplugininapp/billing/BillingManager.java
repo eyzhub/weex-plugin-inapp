@@ -50,26 +50,13 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     @Override
     public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) {
-        boolean isPurchasesNull = purchases == null;
-
-        if (responseCode == BillingClient.BillingResponse.OK) {
-            Log.i(TAG, "Purchase done");
-        } else if (responseCode == BillingClient.BillingResponse.ITEM_ALREADY_OWNED) {
-            Log.i(TAG, "Purchase already owned");
-        }
-
-        Log.i(TAG, String.valueOf(isPurchasesNull));
-        Log.i(TAG, "onPurchasesUpdated() response: " + responseCode);
-
-
         mBillingUpdatesListener.onPurchasesUpdated(purchases, responseCode);
     }
 
     /**
      * Trying to restart service connection if it's needed or just execute a request.
-     * <p>Note: It's just a primitive example - it's up to you to implement a real retry-policy.</p>
      *
-     * @param executeOnSuccess This runnable will be executed once the connection to the Billing
+     *  @param executeOnSuccess This runnable will be executed once the connection to the Billing
      *                         service is restored.
      */
     private void startServiceConnectionIfNeeded(final Runnable executeOnSuccess) {
@@ -84,8 +71,6 @@ public class BillingManager implements PurchasesUpdatedListener {
                 @Override
                 public void onBillingSetupFinished(@BillingClient.BillingResponse int billingResponse) {
                     if (billingResponse == BillingClient.BillingResponse.OK) {
-                        Log.i(TAG, "onBillingSetupFinished() response: " + billingResponse);
-                        Log.d("executeOnSuccess", String.valueOf(executeOnSuccess == null));
 
                         mBillingUpdatesListener.onBillingClientSetupFinished();
 
@@ -106,6 +91,12 @@ public class BillingManager implements PurchasesUpdatedListener {
         }
     }
 
+    /**
+     * One of the most important methods. Queries the play store for the sku abd calls the passed listener.
+     * @param itemType inapp or subs
+     * @param skuList  list of skus
+     * @param listener Listener to callback.
+     */
     public void querySkuDetailsAsync(@BillingClient.SkuType final String itemType,
                                      final List<String> skuList, final SkuDetailsResponseListener listener) {
         // Specify a runnable to start when connection to Billing client is established
@@ -122,8 +113,6 @@ public class BillingManager implements PurchasesUpdatedListener {
                             @Override
                             public void onSkuDetailsResponse(int responseCode,
                                                              List<SkuDetails> skuDetailsList) {
-//                                Log.i(TAG + "!", skuList.toString());
-//                                Log.i(TAG + "!", itemType);
                                 listener.onSkuDetailsResponse(responseCode, skuDetailsList);
                             }
                         });
@@ -135,8 +124,12 @@ public class BillingManager implements PurchasesUpdatedListener {
     }
 
 
+    /**
+     * Starts the purchase flow
+     * @param skuId SKU
+     * @param billingType inapp or subs
+     */
     public void startPurchaseFlow(final String skuId, final String billingType) {
-        Log.i("billingtype", billingType + " " + skuId);
         Runnable executeOnConnectedService = new Runnable() {
             @Override
             public void run() {
@@ -150,9 +143,6 @@ public class BillingManager implements PurchasesUpdatedListener {
             }
         };
 
-
-//        int responseCode = mBillingClient.launchBillingFlow(this.mActivity, builder.build());
-//        Log.i("responseCode", String.valueOf(responseCode));
         startServiceConnectionIfNeeded(executeOnConnectedService);
     }
 
@@ -160,6 +150,10 @@ public class BillingManager implements PurchasesUpdatedListener {
         mBillingClient.endConnection();
     }
 
+    /**
+     * Consume transactional products for re-purchase.
+     * @param purchaseToken
+     */
     public void consumeAsync(final String purchaseToken) {
         if (mTokensToBeConsumed == null) {
             mTokensToBeConsumed = new HashSet<>();
