@@ -1,4 +1,4 @@
-package org.weex.plugin.weexplugininapp.billing;
+package de.eyzmedia.plugin.weexplugininapp.billing;
 
 import android.app.Activity;
 import android.util.Log;
@@ -80,6 +80,27 @@ public class BillingManager implements PurchasesUpdatedListener {
                 public void onBillingSetupFinished(BillingResult billingResult) {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
 
+                        // Generating Consume Response listener
+                        final ConsumeResponseListener onConsumeListener = new ConsumeResponseListener() {
+                            @Override
+                            public void onConsumeResponse(BillingResult response, String purchaseToken) {
+                                int responseCode = response.getResponseCode();
+                                mBillingUpdatesListener.onConsumeFinished(purchaseToken, responseCode);
+                            }
+                        };
+
+                        Purchase.PurchasesResult pr = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
+                        List<Purchase> pList = pr.getPurchasesList();
+
+                        for (Purchase iitem : pList) {
+                            ConsumeParams consumeParams = ConsumeParams.newBuilder()
+                                    .setPurchaseToken(iitem.getPurchaseToken())
+                                    .build();
+
+
+                            mBillingClient.consumeAsync(consumeParams, onConsumeListener);
+                        }
+
                         mBillingUpdatesListener.onBillingClientSetupFinished();
 
                         if (executeOnSuccess != null) {
@@ -89,7 +110,6 @@ public class BillingManager implements PurchasesUpdatedListener {
                         Log.w(TAG, "onBillingSetupFinished() error code: " + billingResult);
                         mBillingUpdatesListener.responsdError(billingResult);
                     }
-                    Log.i(TAG, String.valueOf(mBillingClient.isReady()));
                 }
 
                 @Override

@@ -1,4 +1,4 @@
-package org.weex.plugin.weexplugininapp.billing;
+package de.eyzmedia.plugin.weexplugininapp.billing;
 
 /*
  * Copyright 2017 Google Inc. All Rights Reserved.

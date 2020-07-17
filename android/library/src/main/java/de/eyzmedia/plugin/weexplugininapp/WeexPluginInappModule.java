@@ -1,4 +1,4 @@
-package org.weex.plugin.weexplugininapp;
+package de.eyzmedia.plugin.weexplugininapp;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,7 +13,8 @@ import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 
 import org.json.JSONObject;
-import org.weex.plugin.weexplugininapp.billing.BillingHandler;
+
+import de.eyzmedia.plugin.weexplugininapp.billing.BillingHandler;
 
 import java.util.HashMap;
 import java.util.Iterator;

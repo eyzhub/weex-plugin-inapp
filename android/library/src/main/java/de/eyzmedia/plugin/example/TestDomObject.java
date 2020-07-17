@@ -1,4 +1,4 @@
-package org.weex.plugin.example;
+package de.eyzmedia.plugin.example;
 
 
 import com.alibaba.weex.plugin.annotation.WeexDomObject;

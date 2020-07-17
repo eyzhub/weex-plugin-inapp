@@ -1,4 +1,4 @@
-package org.weex.plugin.weexplugininapp.billing;
+package de.eyzmedia.plugin.weexplugininapp.billing;
 
 import android.app.Activity;
 import android.util.Log;
@@ -120,6 +120,7 @@ public class BillingHandler {
             response.put("success", false);
             response.put("error", true);
             response.put("productId", null);
+            response.put("message", "PRODUCT_NOT_FOUND");
 
             jsCallback.invoke(response);
         }

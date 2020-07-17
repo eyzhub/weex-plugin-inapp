@@ -1,4 +1,4 @@
-package org.weex.plugin.example;
+package de.eyzmedia.plugin.example;
 
 /**
  * TODO: Auto-generated adapter example

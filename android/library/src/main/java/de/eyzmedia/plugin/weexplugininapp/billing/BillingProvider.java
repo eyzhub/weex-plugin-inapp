@@ -1,4 +1,4 @@
-package org.weex.plugin.weexplugininapp.billing;
+package de.eyzmedia.plugin.weexplugininapp.billing;
 
 /**
  * An interface that provides an access to Billing Library methods
