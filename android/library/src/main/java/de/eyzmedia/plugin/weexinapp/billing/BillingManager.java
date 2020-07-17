@@ -1,4 +1,4 @@
-package de.eyzmedia.plugin.weexplugininapp.billing;
+package de.eyzmedia.plugin.weexinapp.billing;
 
 import android.app.Activity;
 import android.util.Log;

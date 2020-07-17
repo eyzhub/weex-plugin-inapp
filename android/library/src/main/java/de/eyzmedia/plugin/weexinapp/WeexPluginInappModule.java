@@ -1,4 +1,4 @@
-package de.eyzmedia.plugin.weexplugininapp;
+package de.eyzmedia.plugin.weexinapp;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,11 +14,11 @@ import com.taobao.weex.common.WXModule;
 
 import org.json.JSONObject;
 
-import de.eyzmedia.plugin.weexplugininapp.billing.BillingHandler;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import de.eyzmedia.plugin.weexinapp.billing.BillingHandler;
 
 @WeexModule(name = "weexPluginInapp")
 public class WeexPluginInappModule extends WXModule {
@@ -137,14 +137,9 @@ public class WeexPluginInappModule extends WXModule {
             // and return all at once in the callback
             // JSONArray list = json.getJSONArray("list");
 
-            Toast.makeText(mWXSDKInstance.getContext(),
-                    "getProductInfo ", Toast.LENGTH_SHORT
-            ).show();
-
-            this.jsCallback = jsCallback;
-            this.thisActivity = ((Activity) mWXSDKInstance.getContext());
-            // jsCallback('getProductInfo');
-            // this.doPurchase();
+            Map<String, Object> response = new HashMap();
+            response.put("getProductInfo", null);
+            jsCallback.invoke(response);
         }
     }
 }

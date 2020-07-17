@@ -49,7 +49,7 @@ import com.taobao.weex.common.WXException;
 
 import com.alibaba.weex.plugin.loader.WeexPluginContainer;
 
-import de.eyzmedia.plugin.weexplugininapp.WeexPluginInappModule;
+import de.eyzmedia.plugin.weexinapp.WeexPluginInappModule;
 
 public class WXApplication extends Application {
 
