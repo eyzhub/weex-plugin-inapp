@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.taobao.android.weex.plugin.gradle'
 android {
     compileSdkVersion 26
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '26.0.0'
     defaultConfig {
         applicationId "de.sooner.stream"
         minSdkVersion 23
