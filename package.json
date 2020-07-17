@@ -31,7 +31,7 @@
   },
   "keywords": [
     "weex",
-    "weex-plugin",
+    "weex-plugin"
   ],
   "dependencies": {
     "phantom-limb": "0.0.1",
