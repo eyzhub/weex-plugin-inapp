@@ -12,29 +12,28 @@
     "lint": "eslint --ext .js,.vue src --fix",
     "serve": "webpack-dev-server --env.NODE_ENV=development --progress",
     "prepublish": "npm run lint && npm run build",
+    "publish": "weex plugin publish",
     "patch": "npm --no-git-tag-version version patch",
     "minor": "npm --no-git-tag-version version minor"
   },
   "web": {
-    "name": "weex-plugin-lottie",
-    "version": "0.1.1"
+    "name": "weex-plugin-inapp",
+    "version": "0.3.0"
   },
   "android": {
     "name": "WXInapp",
-    "dependency": "de.eyzmedia.plugin:weexinapp:1.0.0"
+    "dependency": "de.eyzmedia.plugin:weexinapp:0.3.0"
   },
   "ios": {
     "type": "pod",
-    "name": "WXLottie",
-    "version": "1.0"
+    "name": "WeexPluginInapp",
+    "version": "0.3"
   },
   "keywords": [
     "weex",
     "weex-plugin",
-    "weex-lottie"
   ],
   "dependencies": {
-    "lottie-web": "^5.1.7",
     "phantom-limb": "0.0.1",
     "vue": "^2.5.13",
     "weex-vue-render": "^0.12.25"
