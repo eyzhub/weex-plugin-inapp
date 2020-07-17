@@ -1,6 +1,6 @@
 {
   "name": "weex-plugin-inapp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Weex plugin for in-app purchases for Android and iOS",
   "author": "Phani Saripalli <saripalli.phani@gmail.com>",
   "scripts": {
@@ -11,7 +11,9 @@
     "clean": "rimraf ./build",
     "lint": "eslint --ext .js,.vue src --fix",
     "serve": "webpack-dev-server --env.NODE_ENV=development --progress",
-    "prepublish": "npm run lint && npm run build"
+    "prepublish": "npm run lint && npm run build",
+    "patch": "npm --no-git-tag-version version patch",
+    "minor": "npm --no-git-tag-version version minor"
   },
   "web": {
     "name": "weex-plugin-lottie",

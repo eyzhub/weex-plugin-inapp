@@ -2,7 +2,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "WeexPluginInapp"
-  s.version      = "0.2.0"
+  s.version      = "0.3.0"
   s.summary      = "Weex Plugin for InApp Purchases in iOS and Android"
 
   s.description  = <<-DESC
@@ -17,12 +17,12 @@ Pod::Spec.new do |s|
     LICENSE
   }
   s.authors      = {
-                     "yourname" =>"youreamail"
+                     "DSeeKer" =>"siqueira@eyzmedia.de"
                    }
   s.platform     = :ios
   s.ios.deployment_target = "9.0"
 
-  s.source       = { :git => 'please input the url of your code in github', :tag => 'please input you github tag' }
+  s.source       = { :git => 'https://github.com/eyzhub/weex-plugin-inapp.git', :tag => '0.3.0' }
   s.source_files  = "ios/Sources/*.{h,m,mm}"
   
   s.requires_arc = true
