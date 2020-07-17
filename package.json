@@ -18,8 +18,8 @@
     "version": "0.1.1"
   },
   "android": {
-    "name": "WXLottie",
-    "dependency": "org.asialee.weex:weexplugin:1.0.2"
+    "name": "WXInapp",
+    "dependency": "de.eyzmedia.plugin:weexinapp:1.0.0"
   },
   "ios": {
     "type": "pod",
