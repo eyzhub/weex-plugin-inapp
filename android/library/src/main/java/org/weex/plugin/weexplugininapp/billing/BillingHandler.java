@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsResponseListener;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BillingHandler implements BillingProvider {
+public class BillingHandler {
     private static final String TAG = "BillingHandler";
     private BillingManager mBillingManager;
     private UpdateListener mUpdateListener;
@@ -39,11 +40,6 @@ public class BillingHandler implements BillingProvider {
         mBillingManager = new BillingManager(this.mActivity, this.getUpdateListener());
     }
 
-    @Override
-    public BillingManager getBillingManager() {
-        return this.mBillingManager;
-    }
-
     public UpdateListener getUpdateListener() {
         return mUpdateListener;
     }
@@ -52,7 +48,7 @@ public class BillingHandler implements BillingProvider {
 
         @Override
         public void onBillingClientSetupFinished() {
-            Log.d("UpdateListener", "onBillingClientSetupFinished");
+            Log.d("UpdateListener", "Billing ClientSetup Finished");
             this.query();
 
         }
@@ -65,41 +61,51 @@ public class BillingHandler implements BillingProvider {
 
         }
 
-        @Override
-        public void onPurchasesUpdated(List<Purchase> purchases) {
-            Log.d("onPurchasesUpdated", String.valueOf(purchases == null));
+        public void responsdError(BillingResult billingResult) {
+            response.put("billingResponseCode", billingResult.getResponseCode());
+            response.put("success", false);
+            response.put("message", billingResult.getDebugMessage());
+            jsCallback.invoke(response);
         }
 
         @Override
-        public void onPurchasesUpdated(List<Purchase> purchases, int responseCode) {
-            boolean success = true;
+        public void onPurchasesUpdated(BillingResult billingResult, List<Purchase> purchases) {
+            boolean success = false;
+            response.put("billingResponseCode", billingResult.getResponseCode());
 
-            response.put("billingResponseCode", responseCode);
-
-            if (responseCode == BillingClient.BillingResponse.OK) {
-                response.put("success", true);
-                Log.i(TAG + "!", String.valueOf(responseCode));
-
-                for (Purchase purchase : purchases) {
-                    Log.i(TAG + "!", purchase.toString());
-                    String purchaseToken = purchase.getPurchaseToken();
-
-                    if (productType == BillingClient.SkuType.INAPP) {
-                        mBillingManager.consumeAsync(purchaseToken);
-                    }
-
-                    response.put("purchase", purchase);
-                    response.put("purchaseToken", purchaseToken);
-                    response.put("productId", purchase.getSku());
-                }
-            } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
-                response.put("productId", productId);
-                success = true;
-            }
-            else {
+            if (billingResult == null) {
                 success = false;
                 response.put("error", true);
                 response.put("productId", productId);
+            } else {
+                int responseCode = billingResult.getResponseCode();
+
+                if (responseCode == BillingClient.BillingResponseCode.OK) {
+                    response.put("success", true);
+
+                    for (Purchase purchase : purchases) {
+                        Log.i(TAG + "!", purchase.toString());
+                        String purchaseToken = purchase.getPurchaseToken();
+
+                        if (productType == BillingClient.SkuType.INAPP) {
+                            mBillingManager.consumeAsync(purchaseToken);
+                        }
+
+                        mBillingManager.acknowledgePurchase(purchase);
+
+                        response.put("purchase", purchase);
+                        response.put("purchaseToken", purchaseToken);
+                        response.put("productId", purchase.getSku());
+                    }
+                    Log.i(TAG + "!", String.valueOf(responseCode));
+                } else if (responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+                    response.put("productId", productId);
+                    success = true;
+                } else {
+                    success = false;
+                    response.put("error", true);
+                    response.put("productId", productId);
+                }
             }
 
             response.put("success", success);
@@ -122,10 +128,16 @@ public class BillingHandler implements BillingProvider {
             final List<SkuRowData> inList = new ArrayList<>();
             SkuDetailsResponseListener responseListener = new SkuDetailsResponseListener() {
                 @Override
-                public void onSkuDetailsResponse(int responseCode,
-                                                 List<SkuDetails> skuDetailsList) {
-                    if (responseCode == BillingClient.BillingResponse.OK && skuDetailsList != null) {
+                public void onSkuDetailsResponse(BillingResult billingResult, List<SkuDetails> skuDetailsList) {
+                    int responseCode = billingResult.getResponseCode();
+
+                    if (responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
                         Log.i("skuDetailsList", String.valueOf(skuDetailsList.size()));
+
+                        if (skuDetailsList.size() == 0) {
+                            Log.i(TAG, "Product not found" + productId);
+                            mUpdateListener.respondNoProductsFound();
+                        }
 
                         for (SkuDetails details : skuDetailsList) {
                             Log.i(TAG, "Found sku: " + details);
@@ -136,7 +148,7 @@ public class BillingHandler implements BillingProvider {
 
                             Log.i(TAG, "INITING purchase flow " + productId);
 
-                            mBillingManager.startPurchaseFlow(productId, details.getType());
+                            mBillingManager.startPurchaseFlow(details);
                         }
                     } else {
                         respondNoProductsFound();

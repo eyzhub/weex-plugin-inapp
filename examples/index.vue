@@ -31,6 +31,9 @@
 		<div @click="testUnavailable" class="button yellow">
 			<text style="color:#fff">Buy (Unavailable)</text>
 		</div>
+		<div @click="subscribe" class="button">
+			<text style="color:#fff">Subscribe</text>
+		</div>
 	</div>
 	<text class="message">{{response}}</text>
 	<text class="message" v-if="products.length">{{products[0].title}}: {{products[0].price}} | {{products[0].productId}}</text>
@@ -44,7 +47,7 @@
 			logo: 'http://img1.vued.vanthink.cn/vued08aa73a9ab65dcbd360ec54659ada97c.png',
 			response: {},
 			productIds: ['android.test.purchased','com.company.app.inapp.id'],
-			products: [],
+			products: [{productId: "test.sub"}]
 		},
 		methods: {
 			showDialog: function() {
@@ -56,6 +59,14 @@
 				let productId = (weex.config.env.osName == 'android') ? 'android.test.purchased' : this.products[0].productId
 				weexPluginInapp.buy(productId, (data) => {
 					console.log('-> weexPluginInapp buy', data)
+					this.response = data
+				})
+			},
+			subscribe: function() {
+				// weexPluginInapp.buy(JSON.stringify({id : this.products[0].productId}), (data) => {
+				let productId = this.products[0].productId
+				weexPluginInapp.subscribe(productId, (data) => {
+					console.log('-> weexPluginInapp subscribe', data)
 					this.response = data
 				})
 			},

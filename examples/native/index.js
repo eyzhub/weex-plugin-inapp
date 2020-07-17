@@ -92,10 +92,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/Users/dseeker/eyzmedia/weex-plugin-inapp/examples/index.vue"
+__vue_options__.__file = "/Users/phanisaripalli/eyzmedia/weex-plugin-inapp/examples/index.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-13fd3750"
+__vue_options__._scopeId = "data-v-39ef4656"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -198,6 +198,9 @@ module.exports = {
 //
 //
 //
+//
+//
+//
 
 const weexPluginInapp = weex.requireModule('weexPluginInapp');
 module.exports = {
@@ -205,7 +208,7 @@ module.exports = {
 		logo: 'http://img1.vued.vanthink.cn/vued08aa73a9ab65dcbd360ec54659ada97c.png',
 		response: {},
 		productIds: ['android.test.purchased', 'com.company.app.inapp.id'],
-		products: []
+		products: [{ productId: "test.sub" }]
 	},
 	methods: {
 		showDialog: function () {
@@ -217,6 +220,14 @@ module.exports = {
 			let productId = weex.config.env.osName == 'android' ? 'android.test.purchased' : this.products[0].productId;
 			weexPluginInapp.buy(productId, data => {
 				console.log('-> weexPluginInapp buy', data);
+				this.response = data;
+			});
+		},
+		subscribe: function () {
+			// weexPluginInapp.buy(JSON.stringify({id : this.products[0].productId}), (data) => {
+			let productId = this.products[0].productId;
+			weexPluginInapp.subscribe(productId, data => {
+				console.log('-> weexPluginInapp subscribe', data);
 				this.response = data;
 			});
 		},
@@ -352,7 +363,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       color: "#fff"
     }
-  }, [_vm._v("Buy (Unavailable)")])])]), _c('text', {
+  }, [_vm._v("Buy (Unavailable)")])]), _c('div', {
+    staticClass: ["button"],
+    on: {
+      "click": _vm.subscribe
+    }
+  }, [_c('text', {
+    staticStyle: {
+      color: "#fff"
+    }
+  }, [_vm._v("Subscribe")])])]), _c('text', {
     staticClass: ["message"]
   }, [_vm._v(_vm._s(_vm.response))]), (_vm.products.length) ? _c('text', {
     staticClass: ["message"]

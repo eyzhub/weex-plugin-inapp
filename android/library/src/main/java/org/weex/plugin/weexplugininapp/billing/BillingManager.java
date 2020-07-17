@@ -1,12 +1,15 @@
 package org.weex.plugin.weexplugininapp.billing;
 
 import android.app.Activity;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
@@ -33,30 +36,35 @@ public class BillingManager implements PurchasesUpdatedListener {
     public interface BillingUpdatesListener {
         void onBillingClientSetupFinished();
 
-        void onConsumeFinished(String token, @BillingClient.BillingResponse int result);
+        void onConsumeFinished(String token, @BillingClient.BillingResponseCode int result);
 
-        void onPurchasesUpdated(List<Purchase> purchases);
+        void onPurchasesUpdated(BillingResult billingResult, List<Purchase> purchases);
 
-        void onPurchasesUpdated(List<Purchase> purchases, int responseCode);
+        void responsdError(BillingResult billingResult);
+
     }
 
     public BillingManager(Activity activity, final BillingUpdatesListener updatesListener) {
         mActivity = activity;
         mBillingUpdatesListener = updatesListener;
 
-        mBillingClient = BillingClient.newBuilder(mActivity).setListener(this).build();
+        mBillingClient = BillingClient.newBuilder(mActivity)
+                .enablePendingPurchases()
+                .setListener(this)
+                .build();
+
         startServiceConnectionIfNeeded(null);
     }
 
     @Override
-    public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) {
-        mBillingUpdatesListener.onPurchasesUpdated(purchases, responseCode);
+    public void onPurchasesUpdated(BillingResult billingResult, List<Purchase> purchases) {
+        mBillingUpdatesListener.onPurchasesUpdated(billingResult, purchases);
     }
 
     /**
      * Trying to restart service connection if it's needed or just execute a request.
      *
-     *  @param executeOnSuccess This runnable will be executed once the connection to the Billing
+     * @param executeOnSuccess This runnable will be executed once the connection to the Billing
      *                         service is restored.
      */
     private void startServiceConnectionIfNeeded(final Runnable executeOnSuccess) {
@@ -69,8 +77,8 @@ public class BillingManager implements PurchasesUpdatedListener {
         } else {
             mBillingClient.startConnection(new BillingClientStateListener() {
                 @Override
-                public void onBillingSetupFinished(@BillingClient.BillingResponse int billingResponse) {
-                    if (billingResponse == BillingClient.BillingResponse.OK) {
+                public void onBillingSetupFinished(BillingResult billingResult) {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
 
                         mBillingUpdatesListener.onBillingClientSetupFinished();
 
@@ -78,7 +86,8 @@ public class BillingManager implements PurchasesUpdatedListener {
                             executeOnSuccess.run();
                         }
                     } else {
-                        Log.w(TAG, "onBillingSetupFinished() error code: " + billingResponse);
+                        Log.w(TAG, "onBillingSetupFinished() error code: " + billingResult);
+                        mBillingUpdatesListener.responsdError(billingResult);
                     }
                     Log.i(TAG, String.valueOf(mBillingClient.isReady()));
                 }
@@ -93,6 +102,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     /**
      * One of the most important methods. Queries the play store for the sku abd calls the passed listener.
+     *
      * @param itemType inapp or subs
      * @param skuList  list of skus
      * @param listener Listener to callback.
@@ -111,9 +121,9 @@ public class BillingManager implements PurchasesUpdatedListener {
                 mBillingClient.querySkuDetailsAsync(skuDetailsParams,
                         new SkuDetailsResponseListener() {
                             @Override
-                            public void onSkuDetailsResponse(int responseCode,
+                            public void onSkuDetailsResponse(BillingResult response,
                                                              List<SkuDetails> skuDetailsList) {
-                                listener.onSkuDetailsResponse(responseCode, skuDetailsList);
+                                listener.onSkuDetailsResponse(response, skuDetailsList);
                             }
                         });
             }
@@ -126,18 +136,19 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     /**
      * Starts the purchase flow
-     * @param skuId SKU
-     * @param billingType inapp or subs
+     *
+     * @param skuDetails skudetails
      */
-    public void startPurchaseFlow(final String skuId, final String billingType) {
+    public void startPurchaseFlow(final SkuDetails skuDetails) {
         Runnable executeOnConnectedService = new Runnable() {
             @Override
             public void run() {
                 BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                        .setType(billingType)
-                        .setSku(skuId)
+                        .setSkuDetails(skuDetails)
                         .build();
-                int responseCode = mBillingClient.launchBillingFlow(mActivity, billingFlowParams);
+
+                BillingResult billingResult = mBillingClient.launchBillingFlow(mActivity, billingFlowParams);
+                int responseCode = billingResult.getResponseCode();
 
                 Log.i("responseCode", String.valueOf(responseCode));
             }
@@ -152,6 +163,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     /**
      * Consume transactional products for re-purchase.
+     *
      * @param purchaseToken
      */
     public void consumeAsync(final String purchaseToken) {
@@ -161,12 +173,14 @@ public class BillingManager implements PurchasesUpdatedListener {
             Log.i(TAG, "Token was already scheduled to be consumed - skipping...");
             return;
         }
+
         mTokensToBeConsumed.add(purchaseToken);
 
         // Generating Consume Response listener
         final ConsumeResponseListener onConsumeListener = new ConsumeResponseListener() {
             @Override
-            public void onConsumeResponse(@BillingClient.BillingResponse int responseCode, String purchaseToken) {
+            public void onConsumeResponse(BillingResult response, String purchaseToken) {
+                int responseCode = response.getResponseCode();
                 mBillingUpdatesListener.onConsumeFinished(purchaseToken, responseCode);
             }
         };
@@ -175,11 +189,34 @@ public class BillingManager implements PurchasesUpdatedListener {
         Runnable consumeRequest = new Runnable() {
             @Override
             public void run() {
-                // Consume the purchase async
-                mBillingClient.consumeAsync(purchaseToken, onConsumeListener);
+                ConsumeParams consumeParams =
+                        ConsumeParams.newBuilder()
+                                .setPurchaseToken(purchaseToken)
+                                .build();
+
+                mBillingClient.consumeAsync(consumeParams, onConsumeListener);
             }
         };
 
         startServiceConnectionIfNeeded(consumeRequest);
+    }
+
+    public void acknowledgePurchase(Purchase purchase) {
+        if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+            if (!purchase.isAcknowledged()) {
+                AcknowledgePurchaseParams acknowledgePurchaseParams =
+                        AcknowledgePurchaseParams.newBuilder()
+                                .setPurchaseToken(purchase.getPurchaseToken())
+                                .build();
+                mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
+                    @Override
+                    public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                            Log.i(TAG, "Purchased acknowledged");
+                        }
+                    }
+                });
+            }
+        }
     }
 }
