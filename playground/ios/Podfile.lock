@@ -9,7 +9,7 @@ PODS:
     - SDWebImage/Core (= 3.7.5)
   - SDWebImage/Core (3.7.5)
   - SocketRocket (0.4.2)
-  - WeexPluginInapp (0.0.2):
+  - WeexPluginInapp (0.3.0):
     - RMStore
     - RMStore/NSUserDefaultsPersistence
     - WeexPluginLoader
@@ -30,7 +30,7 @@ DEPENDENCIES:
   - WXDevtool (= 0.9.5)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - ATSDK-Weex
     - RMStore
     - SDWebImage
@@ -48,11 +48,11 @@ SPEC CHECKSUMS:
   RMStore: 64ba13a9c040e3b7572765d169f77175cd3243e5
   SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
   SocketRocket: ffe08119b00ef982f6c37052a4705a057c8494ad
-  WeexPluginInapp: 83a51a962599638593856072bfe90294638d720d
+  WeexPluginInapp: 698a01d5ed18793a00897dd9f9d88d037816c695
   WeexPluginLoader: 85c1304f8ba29864e58531614a0acfeceef1b85c
   WeexSDK: 434995ea3d16efbff5f586b68cb2572df9170f58
   WXDevtool: 5135a5c6f4426fb635babb9eacfa14352bc66dc6
 
 PODFILE CHECKSUM: a0c3eca9ba5238a490d16835faf03eaa42056e7e
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.8.4
