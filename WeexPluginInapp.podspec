@@ -25,6 +25,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => 'https://github.com/eyzhub/weex-plugin-inapp.git', :tag => '0.3.0' }
   s.source_files  = "ios/Sources/*.{h,m,mm}"
   
+  s.static_framework = true
   s.requires_arc = true
   s.dependency "WeexPluginLoader"
   s.dependency "WeexSDK"
