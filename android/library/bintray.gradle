@@ -1,0 +1,44 @@
+apply plugin: 'com.jfrog.bintray'
+
+version = '0.3.0'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load( new FileInputStream("local.properties"))
+
+// Bintray
+bintray {
+    user = System.getProperty("bintray.user") ?: properties.getProperty("bintray.user")
+    key = System.getProperty("bintray.apikey") ?: properties.getProperty("bintray.apikey")
+
+    pkg {
+        repo = 'weexinapp'
+        name = 'de.eyzmedia.plugin'
+        configurations = ['archives']
+        desc = 'Android module to perform in-app purchases in Weex platform'
+        websiteUrl = 'https://github.com/eyzhub/weex-plugin-inapp'
+        vcsUrl = 'https://github.com/eyzhub/weex-plugin-inapp.git'
+        licenses = ["Apache-2.0"]
+        publish = true
+        publicDownloadNumbers = true
+    }
+}

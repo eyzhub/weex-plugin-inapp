@@ -11,3 +11,12 @@ Open plaground/android in Android Studio
 Connect an android device
 Build and run
 Scan the QR code in browser.
+
+### Bintray
+
+**install**
+
+`../../playground/android/gradlew install`
+
+**upload**
+`../../playground/android/gradlew bintrayUpload -Dbintray.user=<> -Dbintray.apikey=<>`

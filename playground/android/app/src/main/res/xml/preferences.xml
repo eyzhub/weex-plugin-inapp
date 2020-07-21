@@ -66,8 +66,8 @@
     <CheckBoxPreference
         android:key="preferences_history"
         android:defaultValue="true"
-        android:title="@string/preferences_history_title"
-        android:summary="@string/preferences_history_summary"/>
+        android:title="Preferences history"
+        android:summary="Preferences history summary"/>
     <CheckBoxPreference
         android:key="preferences_supplemental"
         android:defaultValue="true"
