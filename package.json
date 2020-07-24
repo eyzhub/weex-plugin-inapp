@@ -1,6 +1,6 @@
 {
   "name": "weex-plugin-inapp",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Weex plugin for in-app purchases for Android and iOS",
   "main": "index.js",
   "author": [
@@ -19,7 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/eyzhub/weex-plugin-inapp.git"
   },
-   "bugs": {
+  "bugs": {
     "url": "https://github.com/eyzhub/weex-plugin-inapp/issues"
   },
   "scripts": {
@@ -37,23 +37,22 @@
   },
   "web": {
     "name": "weex-plugin-inapp",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "android": {
     "name": "WXInapp",
-    "dependency": "de.eyzmedia.plugin:weexinapp:0.3.0"
+    "dependency": "de.eyzmedia.plugin:weexinapp:0.3.1"
   },
   "ios": {
     "type": "pod",
     "name": "WeexPluginInapp",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "keywords": [
     "weex",
     "weex-plugin"
   ],
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "phantom-limb": "0.0.1",
     "vue": "^2.5.13",
