@@ -1,8 +1,8 @@
 {
   "name": "weex-plugin-inapp",
-  "version": "0.3.2",
+  "version": "0.3.6",
   "description": "Weex plugin for in-app purchases for Android and iOS",
-  "main": "index.js",
+  "main": "./build/index.js",
   "author": [
     {
       "name": "Phani Saripalli",
@@ -35,9 +35,9 @@
     "patch": "npm --no-git-tag-version version patch",
     "minor": "npm --no-git-tag-version version minor"
   },
-  "webDisabled": {
+  "web": {
     "name": "weex-plugin-inapp",
-    "version": "0.3.1"
+    "version": "0.3.5"
   },
   "android": {
     "name": "WXInapp",
