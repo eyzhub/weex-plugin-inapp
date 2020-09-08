@@ -14,6 +14,8 @@ Scan the QR code in browser.
 
 ### Bintray
 
+`cd weex-plugin-inapp/android/library`
+
 **install**
 
 `../../playground/android/gradlew install`
