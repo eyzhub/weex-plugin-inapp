@@ -21,6 +21,12 @@
 		</div>
 	</div>
 
+	<div style="display: flex; flex-direction: col;">
+		<div @click="buy(id)" class="button" v-for="id in productIds">
+			<text style="color:#fff; text-align: center">{{ id }}</text>
+		</div>
+	</div>
+
 	<div style="display: flex; flex-direction: row;">
 		<div @click="testFailure" class="button red">
 			<text style="color:#fff">Buy (Fail)</text>
@@ -46,7 +52,7 @@
 		data: {
 			logo: 'http://img1.vued.vanthink.cn/vued08aa73a9ab65dcbd360ec54659ada97c.png',
 			response: {},
-			productIds: ['android.test.purchased','com.company.app.inapp.id'],
+			productIds: ['android.test.purchased','sooner.de_svod.30d.14t.795'],
 			products: [{productId: "test.sub"}]
 		},
 		methods: {
@@ -54,17 +60,19 @@
 				// weexPluginInapp.show();
 				weexPluginInapp.show(JSON.stringify({title: 'In App Purchase', message: weex.config.env.osName+' Module weexPluginInapp was created sucessfully'}));
 			},
-			buy: function() {
+			buy: function(id) {
 				// weexPluginInapp.buy(JSON.stringify({id : this.products[0].productId}), (data) => {
-				let productId = (weex.config.env.osName == 'android') ? 'android.test.purchased' : this.products[0].productId
+				// let productId = (weex.config.env.osName == 'android') ? 'android.test.purchased' : this.products[0].productId
+				let productId = id ? id : this.productIds[0]
 				weexPluginInapp.buy(productId, (data) => {
 					console.log('-> weexPluginInapp buy', data)
 					this.response = data
 				})
 			},
-			subscribe: function() {
+			subscribe: function(id) {
+				weexPluginInapp.show(JSON.stringify({title: 'subscribe', message: id}));
 				// weexPluginInapp.buy(JSON.stringify({id : this.products[0].productId}), (data) => {
-				let productId = this.products[0].productId
+				let productId = id ? id : this.productIds[0]
 				weexPluginInapp.subscribe(productId, (data) => {
 					console.log('-> weexPluginInapp subscribe', data)
 					this.response = data

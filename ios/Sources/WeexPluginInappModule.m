@@ -151,7 +151,7 @@ WX_EXPORT_METHOD(@selector(buy::))
 WX_EXPORT_METHOD(@selector(subscribe::))
 - (void)subscribe:(NSString *)productId :(IAPCallback)callback {
 	/* alias to */
-//    buy(productId, callback);
+    //buy(productId, callback);
 }
 
 WX_EXPORT_METHOD(@selector(manageSubscriptions))

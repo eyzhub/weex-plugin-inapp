@@ -201,13 +201,19 @@ module.exports = {
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 const weexPluginInapp = weex.requireModule('weexPluginInapp');
 module.exports = {
 	data: {
 		logo: 'http://img1.vued.vanthink.cn/vued08aa73a9ab65dcbd360ec54659ada97c.png',
 		response: {},
-		productIds: ['android.test.purchased', 'com.company.app.inapp.id'],
+		productIds: ['android.test.purchased', 'sooner.de_svod.30d.14t.795'],
 		products: [{ productId: "test.sub" }]
 	},
 	methods: {
@@ -215,17 +221,19 @@ module.exports = {
 			// weexPluginInapp.show();
 			weexPluginInapp.show(JSON.stringify({ title: 'In App Purchase', message: weex.config.env.osName + ' Module weexPluginInapp was created sucessfully' }));
 		},
-		buy: function () {
+		buy: function (id) {
 			// weexPluginInapp.buy(JSON.stringify({id : this.products[0].productId}), (data) => {
-			let productId = weex.config.env.osName == 'android' ? 'android.test.purchased' : this.products[0].productId;
+			// let productId = (weex.config.env.osName == 'android') ? 'android.test.purchased' : this.products[0].productId
+			let productId = id ? id : this.productIds[0];
 			weexPluginInapp.buy(productId, data => {
 				console.log('-> weexPluginInapp buy', data);
 				this.response = data;
 			});
 		},
-		subscribe: function () {
+		subscribe: function (id) {
+			weexPluginInapp.show(JSON.stringify({ title: 'subscribe', message: id }));
 			// weexPluginInapp.buy(JSON.stringify({id : this.products[0].productId}), (data) => {
-			let productId = this.products[0].productId;
+			let productId = id ? id : this.productIds[0];
 			weexPluginInapp.subscribe(productId, data => {
 				console.log('-> weexPluginInapp subscribe', data);
 				this.response = data;
@@ -332,6 +340,25 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       color: "#fff"
     }
   }, [_vm._v("restorePurchases")])])]), _c('div', {
+    staticStyle: {
+      display: "flex",
+      flexDirection: "col"
+    }
+  }, _vm._l((_vm.productIds), function(id) {
+    return _c('div', {
+      staticClass: ["button"],
+      on: {
+        "click": function($event) {
+          _vm.buy(id)
+        }
+      }
+    }, [_c('text', {
+      staticStyle: {
+        color: "#fff",
+        textAlign: "center"
+      }
+    }, [_vm._v(_vm._s(id))])])
+  })), _c('div', {
     staticStyle: {
       display: "flex",
       flexDirection: "row"
