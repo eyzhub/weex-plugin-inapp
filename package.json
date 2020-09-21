@@ -1,6 +1,6 @@
 {
   "name": "weex-plugin-inapp",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "Weex plugin for in-app purchases for Android and iOS",
   "main": "./build/index.js",
   "author": [
@@ -41,7 +41,7 @@
   },
   "android": {
     "name": "WXInapp",
-    "dependency": "de.eyzmedia.plugin:weexinapp:0.3.1"
+    "dependency": "de.eyzmedia.plugin:weexinapp:0.3.1@aar"
   },
   "ios": {
     "type": "pod",
