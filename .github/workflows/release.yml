@@ -32,8 +32,8 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Release Maven package
         uses: samuelmeuli/action-maven-publish@v1
-        directory: android/library
         with:
+          directory: android/library
           gpg_private_key: ${{ secrets.gpg_private_key }}
           gpg_passphrase: ${{ secrets.gpg_passphrase }}
           nexus_username: ${{ secrets.nexus_username }}
