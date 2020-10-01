@@ -90,9 +90,8 @@
 		<profile>
 			<id>deploy</id>
 			<build>
-				
 				<plugins>
-	<plugin>
+						<plugin>
 		<groupId>com.simpligility.maven.plugins</groupId>
 		<artifactId>android-maven-plugin</artifactId>
 		<version>4.1.0</version>
@@ -104,8 +103,6 @@
 			</sign>
 		</configuration>
 	</plugin>
-	</plugins>
-				<plugins>
 					<!-- Source plugin -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
