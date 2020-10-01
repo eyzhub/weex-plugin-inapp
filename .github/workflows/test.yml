@@ -31,6 +31,6 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Release Maven package
-            run: gradle install
-                 gradle bintrayUpload
+        run: gradle install
+             gradle bintrayUpload
         
