@@ -30,16 +30,29 @@ jobs:
           java-version: 8
       - name: Build with Gradle
         run: gradle build 
-      - name: Upload package to Bintray
-        uses: bpicode/github-action-upload-bintray@master
+      - name: Create Package
+        uses: benjefferies/create-bintray-package@master
         with:
-          file: android/library/build/outputs/aar/library-debug.aar
-          api_user: weex
-          api_key: ${{ secrets.gpg_private_key }} # An API key can be obtained from the user profile page.
-          gpg_passphrase: ${{ secrets.gpg_passphrase }} # Optional, for this to work Bintray requires a GPG public/private keypair configured for the repository owner (individual or organization).
-          repository_user: weex
-          repository: weex_android
-          package: de.eyzmedia.plugin.weexinapp
-          version: '1.0'
-          publish: 1
+          bintray-user: benjefferies
+          bintray-token: ${{ secrets.BINTRAY_ACCESS_TOKEN }}
+          owner: openbanking4-dev
+          repo: openbanking4.dev
+          package-name: maven-bintray-github-actions
+          package-description: Example
+          package-url: https://github.com/benjefferies/maven-bintray-github-actions
+          package-license: MIT
+      - name: Release
+        uses: qcastel/github-actions-maven-release@master
+        with:
+          release-branch-name: "master"
+          gpg-enabled: "false"
+          gpg-key-id: ${{ secrets.GITHUB_GPG_KEY_ID }}
+          gpg-key: ${{ secrets.gpg_private_key }}
+          maven-repo-server-id: bintray-benjefferies-openbanking4.dev
+          maven-repo-server-username: ${{ secrets.nexus_username }}
+          maven-repo-server-password: ${{ secrets.nexus_password }}
+          maven-args: "-Dmaven.javadoc.skip=true -DskipTests -DskipITs -Ddockerfile.skip -DdockerCompose.skip"
+          git-release-bot-name: "bot"
+          git-release-bot-email: "bot@echosoft.uk"
+          access-token: ${{ secrets.gpg_private_key  }}
       
