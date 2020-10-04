@@ -28,8 +28,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 8
-
-      - name: Upload deb package to Bintray
+      - name: Build with Gradle
+        run: gradle build 
+      - name: Upload package to Bintray
         uses: bpicode/github-action-upload-bintray@master
         with:
           file: android/library/build/outputs/aar/library-debug.aar
