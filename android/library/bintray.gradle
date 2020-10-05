@@ -1,6 +1,40 @@
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
 
 version = '0.3.1'
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                groupId 'de.eyzmedia.plugin'
+                artifactId 'weexinapp'
+                name 'weexinapp'
+                description 'Module to perform in-app purchases in Weex platform'
+                url 'https://github.com/eyzhub/weex-plugin-inapp'
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'eyzmedia'
+                        name 'EYZMedia developer'
+                        email 'developer@eyzmedia.de'
+                    }
+                }
+            }
+        }
+    }
+}
+// Avoid Kotlin docs error
+tasks.withType(Javadoc) {
+    enabled = false
+}
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
@@ -29,7 +63,7 @@ properties.load( new FileInputStream("local.properties"))
 bintray {
     user = System.getenv("bintrayUser") ?: properties.getProperty("bintray.user")
     key = System.getenv("bintrayApiKey") ?: properties.getProperty("bintray.apikey")
-
+    configurations = ['archives']
     pkg {
         repo = 'weexinapp'
         name = 'de.eyzmedia.plugin'
