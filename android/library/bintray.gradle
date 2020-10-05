@@ -21,14 +21,22 @@ artifacts {
     archives javadocJar
     archives sourcesJar
 }
-
-Properties properties = new Properties()
-properties.load( new FileInputStream("local.properties"))
-
+def bintrayUser = ''
+def bintrayApiKey = ''
+// Bintray
+if (project.rootProject.file('local.properties').exists()) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    bintrayUser = properties.getProperty("bintray.user")
+    bintrayApiKey = properties.getProperty("bintray.apikey")
+} else {
+    bintrayUser = System.getenv("bintrayUser")
+    bintrayApiKey = System.getenv("bintrayApiKey")
+}
 // Bintray
 bintray {
-    user = System.getProperty("bintray.user") ?: properties.getProperty("bintray.user")
-    key = System.getProperty("bintray.apikey") ?: properties.getProperty("bintray.apikey")
+    user = bintrayUser
+    key = bintrayApiKey
 
     pkg {
         repo = 'weexinapp'
