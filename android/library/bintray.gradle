@@ -27,8 +27,8 @@ properties.load( new FileInputStream("local.properties"))
 
 // Bintray
 bintray {
-    user = System.getProperty("bintray.user") ?: properties.getProperty("bintray.user")
-    key = System.getProperty("bintray.apikey") ?: properties.getProperty("bintray.apikey")
+    user = System.getenv("bintrayUser") ?: properties.getProperty("bintray.user")
+    key = System.getenv("bintrayApiKey") ?: properties.getProperty("bintray.apikey")
 
     pkg {
         repo = 'weexinapp'
