@@ -41,8 +41,10 @@
 			<text style="color:#fff">Subscribe</text>
 		</div>
 	</div>
-	<text class="message">{{response}}</text>
-	<text class="message" v-if="products.length">{{products[0].title}}: {{products[0].price}} | {{products[0].productId}}</text>
+	<scroller class="scroller">
+		<text class="message">{{response}}</text>
+		<text class="message" v-if="products.length">{{products[0].title}}: {{products[0].price}} | {{products[0].productId}}</text>
+	</scroller>
   </div>
 </template>
 
@@ -52,7 +54,7 @@
 		data: {
 			logo: 'http://img1.vued.vanthink.cn/vued08aa73a9ab65dcbd360ec54659ada97c.png',
 			response: {},
-			productIds: ['android.test.purchased','sooner.de_svod.30d.14t.795'],
+			productIds: ['android.test.purchased','sooner.de_svod.30d.14t.795','sooner.de_tvod.3d.195'],
 			products: [{productId: "test.sub"}]
 		},
 		methods: {
@@ -65,7 +67,7 @@
 				// let productId = (weex.config.env.osName == 'android') ? 'android.test.purchased' : this.products[0].productId
 				let productId = id ? id : this.productIds[0]
 				weexPluginInapp.buy(productId, (data) => {
-					console.log('-> weexPluginInapp buy', data)
+					console.log('-> weexPluginInapp buy', Object.keys(data.result), data.result.receipt)
 					this.response = data
 				})
 			},
@@ -138,6 +140,10 @@
 	.message {
 		font-size: 26px;
 		color: #727272;
+	},
+	.scroller {
+		width: 750px;
+		height: 200px;
 	}
 	.button {
 		margin: 20px;

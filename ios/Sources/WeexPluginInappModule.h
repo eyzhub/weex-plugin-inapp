@@ -12,6 +12,7 @@ typedef void (^IAPCallback)(id result);
 - (void)info:(NSString *)json :(IAPCallback)callback;
 - (void)getProductInfo:(NSString *)json :(IAPCallback)callback;
 - (void)getReceipt:(NSString *)json :(IAPCallback)callback;
+- (void)acceptStoredPayments:(NSString *)json :(IAPCallback)callback;
 - (void)restorePurchases:(NSString *)json :(IAPCallback)callback;
 - (void)buy:(NSString *)productId :(IAPCallback)callback;
 - (void)subscribe:(NSString *)productId :(IAPCallback)callback;

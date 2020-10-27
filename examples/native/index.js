@@ -135,6 +135,10 @@ module.exports = {
     "fontSize": "26",
     "color": "#727272"
   },
+  "scroller": {
+    "width": "750",
+    "height": "200"
+  },
   "button": {
     "marginTop": "20",
     "marginRight": "20",
@@ -207,13 +211,15 @@ module.exports = {
 //
 //
 //
+//
+//
 
 const weexPluginInapp = weex.requireModule('weexPluginInapp');
 module.exports = {
 	data: {
 		logo: 'http://img1.vued.vanthink.cn/vued08aa73a9ab65dcbd360ec54659ada97c.png',
 		response: {},
-		productIds: ['android.test.purchased', 'sooner.de_svod.30d.14t.795'],
+		productIds: ['android.test.purchased', 'sooner.de_svod.30d.14t.795', 'sooner.de_tvod.3d.195'],
 		products: [{ productId: "test.sub" }]
 	},
 	methods: {
@@ -226,7 +232,7 @@ module.exports = {
 			// let productId = (weex.config.env.osName == 'android') ? 'android.test.purchased' : this.products[0].productId
 			let productId = id ? id : this.productIds[0];
 			weexPluginInapp.buy(productId, data => {
-				console.log('-> weexPluginInapp buy', data);
+				console.log('-> weexPluginInapp buy', Object.keys(data.result), data.result.receipt);
 				this.response = data;
 			});
 		},
@@ -399,11 +405,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       color: "#fff"
     }
-  }, [_vm._v("Subscribe")])])]), _c('text', {
+  }, [_vm._v("Subscribe")])])]), _c('scroller', {
+    staticClass: ["scroller"]
+  }, [_c('text', {
     staticClass: ["message"]
   }, [_vm._v(_vm._s(_vm.response))]), (_vm.products.length) ? _c('text', {
     staticClass: ["message"]
-  }, [_vm._v(_vm._s(_vm.products[0].title) + ": " + _vm._s(_vm.products[0].price) + " | " + _vm._s(_vm.products[0].productId))]) : _vm._e()])
+  }, [_vm._v(_vm._s(_vm.products[0].title) + ": " + _vm._s(_vm.products[0].price) + " | " + _vm._s(_vm.products[0].productId))]) : _vm._e()])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 

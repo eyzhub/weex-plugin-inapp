@@ -82,11 +82,9 @@ WX_EXPORT_METHOD(@selector(getProductInfo::))
         return;
     }
 
-
-
     NSSet *products = [NSSet setWithArray:productIds];
 //    DumpObjcMethods([RMStore defaultStore]);
-    DumpObjcMethods(object_getClass([RMStore defaultStore]) /* Metaclass */);
+    // DumpObjcMethods(object_getClass([RMStore defaultStore]) /* Metaclass */);
 
 //    NSLog([RMStore canMakePayments] ? @"Yes" : @"No" );
     [[RMStore defaultStore] requestProducts:products success:^(NSArray *products, NSArray *invalidProductIdentifiers) {
@@ -163,7 +161,7 @@ WX_EXPORT_METHOD(@selector(manageSubscriptions))
         [[UIApplication sharedApplication] openURL:URL options:@{} completionHandler:nil];
     } else {
         // Fallback on earlier versions
-//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+       [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
     }
 	#else
 	    [[NSWorkspace sharedWorkspace] openURL:URL];
@@ -227,6 +225,19 @@ WX_EXPORT_METHOD(@selector(getReceipt::))
     }];
 }
 
+WX_EXPORT_METHOD(@selector(acceptStoredPayments::))
+- (BOOL)acceptStoredPayments:(NSString *)json :(IAPCallback)callback {
+    NSLog( @"%@", [self JSONConvert :json] );
+    // NSDictionary* args = [self JSONConvert :json];
+
+    [[RMStore defaultStore] acceptStoredStorePayments^{
+        callback(@{@"result": @{@"payments": YES }});
+    } failure:^(NSError *error) {
+         callback(@{@"result": @{@"errorCode": NILABLE([NSNumber numberWithInteger:error.code]),
+                                 @"errorMessage": NILABLE(error.localizedDescription)
+                                 }});
+    }];
+}
 
 void DumpObjcMethods(Class clz) {
 
